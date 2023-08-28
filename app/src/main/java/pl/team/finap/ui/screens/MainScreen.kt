@@ -1,18 +1,21 @@
 package pl.team.finap.ui.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,104 +26,135 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import pl.team.finap.charts.PieChartData
+import com.himanshoe.charty.bar.model.BarData
+import com.himanshoe.charty.common.ChartDataCollection
+import pl.team.finap.R
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    val backgroundGradient = Brush.linearGradient(
+    val purpleToWhiteGradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFFAC26FF),
-            Color.White
+            Color(R.color.weirdGray),
+            Color.Black
         )
     )
-
     // Replace this with your actual data
     val walletBalance = "100.00"
 
-    val pieChartDataList = listOf(
-        PieChartData(25.0, Brush.linearGradient(listOf(Color.Red, Color.Yellow))),
-        PieChartData(50.0, Brush.linearGradient(listOf(Color.Blue, Color.Green))),
-        PieChartData(25.0, Brush.linearGradient(listOf(Color.Green, Color.Cyan)))
-    )
-
+    val chartDataCollection: ChartDataCollection =
+        ChartDataCollection(
+            listOf(
+                BarData(25f, 0f, Color.Gray),
+                BarData(30f, 0f, Color.Green),
+                BarData(10f, 0f, Color.Blue)
+            )
+        )
     Box(
-        modifier = Modifier.fillMaxSize().background(brush = backgroundGradient),
-        contentAlignment = Alignment.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = purpleToWhiteGradient)
+            .padding(8.dp)
     ) {
-
-        // Wallet State
-        Box(
-            modifier = Modifier
-                .padding(top = 16.dp, start = 16.dp)
-                .background(Color.Transparent, shape = MaterialTheme.shapes.medium)
-                .padding(16.dp),
-            contentAlignment = Alignment.TopStart
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Wallet Icon", tint = Color.Green)
+                Icon(
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Wallet Icon",
+                    tint = Color.Black
+                )
                 Text(
                     text = walletBalance,
                     style = MaterialTheme.typography.titleLarge
                 )
             }
-        }
 
-        // Chart Placeholder
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .background(Color.Transparent)
-        ) {
-            PieChart(
-                data = pieChartDataList,
-                modifier = Modifier.size(200.dp)
-            )
-        }
-
-        // Floating Action Button
-        FloatingActionButton(
-            onClick = {
-                // Navigate to the transaction screen. Replace "Destination" with your screen's route.
-                navController.navigate("Destination")
-            },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp) // This adds padding around the button
-        ) {
-            Icon(Icons.Default.Add, contentDescription = "Add New Transaction")
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+                    .background(Color.Gray.copy(alpha = 0.2f))
+            ) {
+                val data = listOf(10f, 50f, 80f, 40f, 100f, 60f)
+                BarChart(data = data, maxHeight = 200.dp)
+            }
+            Row() {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .padding(5.dp)
+                        .weight(1f)
+                ) {
+                    Text(text = "Wydatki")
+                }
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .padding(5.dp)
+                        .weight(1f)
+                ) {
+                    Text(text = "Przychody")
+                }
+            }
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("Destination")
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.End)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add New Transaction")
+            }
         }
     }
 }
 
+
 @Composable
-fun PieChart(
-    data: List<PieChartData>,
-    modifier: Modifier = Modifier
-) {
-    Canvas(modifier = modifier) {
-        val totalValue = data.map { it.value }.sum()
-        var startAngle = 0f
-        for (chartData in data) {
-            val sweepAngle = ((chartData.value / totalValue) * 360f).toFloat()
+fun BarChart(data: List<Float>, maxHeight: Dp) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        val maxDataValue = data.maxOrNull() ?: 1f
 
-            // Use the gradient from chartData
-            val gradientBrush = chartData.gradient
-
-            drawArc(
-                brush = gradientBrush,
-                startAngle = startAngle,
-                sweepAngle = sweepAngle,
-                useCenter = true,
-                size = size
-            )
-            startAngle += sweepAngle
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.surface),  // Set the color to match Card
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            data.forEach { value ->
+                val heightPercentage = value / maxDataValue
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .background(Color.Gray.copy(alpha = 0.2f))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth()
+                            .height((maxHeight * heightPercentage))
+                            .background(Color.Blue)
+                    )
+                }
+                Spacer(
+                    modifier = Modifier
+                        .width(4.dp)
+                        .background(Color.Transparent)
+                )
+            }
         }
     }
 }
