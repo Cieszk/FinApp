@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -33,29 +35,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import pl.team.finap.R
+import pl.team.finap.database.entities.CategoryType
+
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
     val purpleToWhiteGradient = Brush.linearGradient(
         colors = listOf(
-            Color(R.color.weirdGray), Color(R.color.gradient_end_black)
+            colorResource(R.color.weirdGray),
+            colorResource(R.color.light_black)
         )
     )
     val data = listOf(10f, 50f, 80f, 40f, 100f)
     val gradientColors = listOf(
         listOf(
-            Color(R.color.gradient_start_red), Color(R.color.gradient_end_pink)
+            colorResource(id = R.color.gradient_start_red),
+            colorResource(id = R.color.gradient_end_pink)
         ), listOf(
-            Color(R.color.gradient_start_green), Color(R.color.gradient_end_lime)
+            colorResource(id = R.color.gradient_start_green),
+            colorResource(id = R.color.gradient_end_lime)
         ), listOf(
-            Color(R.color.gradient_start_blue), Color(R.color.gradient_end_light_blue)
+            colorResource(id = R.color.gradient_start_blue),
+            colorResource(id = R.color.gradient_end_light_blue)
         ), listOf(
-            Color(R.color.gradient_start_yellow), Color(R.color.gradient_end_orange)
+            colorResource(id = R.color.gradient_start_yellow),
+            colorResource(id = R.color.gradient_end_orange)
         ), listOf(
-            Color(R.color.gradient_start_purple), Color(R.color.gradient_end_magenta)
+            colorResource(id = R.color.gradient_start_purple),
+            colorResource(id = R.color.gradient_end_magenta)
         ), listOf(
-            Color(R.color.gradient_start_cyan), Color(R.color.gradient_end_light_cyan)
+            colorResource(id = R.color.gradient_start_cyan),
+            colorResource(id = R.color.gradient_end_light_cyan)
         )
     )
     val walletBalance = "100.00"
@@ -111,6 +122,7 @@ fun MainScreen() {
             ) {
                 BarChart(data = data, gradientColors = gradientColors, maxHeight = 200.dp)
             }
+            LegendCard(categories = CategoryType.values().toList())
             TransactionRow()
 
         }
@@ -134,7 +146,7 @@ fun TransactionRow() {
         TransactionCard(
             label = "Expenses",
             amount = String.format("-%s", "12091"),
-            color = Color(R.color.gradient_start_red),
+            color = colorResource(id = R.color.gradient_start_red),
             modifier = Modifier
                 .weight(1f)
                 .padding(5.dp)
@@ -142,7 +154,7 @@ fun TransactionRow() {
         TransactionCard(
             label = "Income",
             amount = String.format("+%s", "12091"),
-            color = Color(R.color.gradient_start_green),
+            color = colorResource(id = R.color.gradient_start_green),
             modifier = Modifier
                 .weight(1f)
                 .padding(5.dp)
@@ -152,10 +164,7 @@ fun TransactionRow() {
 
 @Composable
 fun TransactionCard(
-    label: String,
-    amount: String,
-    color: Color,
-    modifier: Modifier = Modifier
+    label: String, amount: String, color: Color, modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
@@ -164,21 +173,14 @@ fun TransactionCard(
     ) {
         Column() {
             Text(
-                text = label,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                ),
-                modifier = Modifier.padding(2.dp, 4.dp)
+                text = label, style = TextStyle(
+                    fontWeight = FontWeight.Bold, fontSize = 18.sp
+                ), modifier = Modifier.padding(2.dp, 4.dp)
             )
             Text(
-                text = amount,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = color
-                ),
-                modifier = Modifier.padding(10.dp, 4.dp)
+                text = amount, style = TextStyle(
+                    fontWeight = FontWeight.Bold, fontSize = 24.sp, color = color
+                ), modifier = Modifier.padding(10.dp, 4.dp)
             )
         }
     }
@@ -222,6 +224,73 @@ fun BarChart(data: List<Float>, gradientColors: List<List<Color>>, maxHeight: Dp
                 )
             }
         }
+    }
+}
+
+@Composable
+fun LegendCard(categories: List<CategoryType>) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            categories.forEach { category ->
+                val (startColorRes, endColorRes) = getCategoryGradientColors(category)
+                val startColor = colorResource(id = startColorRes)
+                val endColor = colorResource(id = endColorRes)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(20.dp)
+                            .background(
+                                brush = Brush.linearGradient(
+                                    colors = listOf(
+                                        startColor, endColor
+                                    )
+                                )
+                            )
+                            .align(Alignment.CenterVertically)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = category.name)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun getCategoryGradientColors(category: CategoryType): Pair<Int, Int> {
+    return when (category) {
+        CategoryType.BILLS -> Pair(
+            R.color.gradient_start_red, R.color.gradient_end_pink
+        )
+
+        CategoryType.FOOD -> Pair(
+            R.color.gradient_start_green, R.color.gradient_end_lime
+        )
+
+        CategoryType.CLOTHES -> Pair(
+            R.color.gradient_start_blue, R.color.gradient_end_light_blue
+        )
+
+        CategoryType.ELECTRONICS -> Pair(
+            R.color.gradient_start_yellow, R.color.gradient_end_orange
+        )
+
+        CategoryType.OTHER -> Pair(
+            R.color.gradient_start_purple, R.color.gradient_end_magenta
+        )
     }
 }
 
