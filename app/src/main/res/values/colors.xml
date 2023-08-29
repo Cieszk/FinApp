@@ -7,5 +7,35 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="weirdGray">#2e2c2c</color>
+
+        <!-- Gradient colors -->
+
+        <!-- Red to Pink -->
+        <color name="gradient_start_red">#FF0000</color>
+        <color name="gradient_end_pink">#FFC0CB</color>
+
+        <!-- Green to Lime -->
+        <color name="gradient_start_green">#008000</color>
+        <color name="gradient_end_lime">#00FF00</color>
+
+        <!-- Blue to Light Blue -->
+        <color name="gradient_start_blue">#0000FF</color>
+        <color name="gradient_end_light_blue">#ADD8E6</color>
+
+        <!-- Yellow to Orange -->
+        <color name="gradient_start_yellow">#FFFF00</color>
+        <color name="gradient_end_orange">#FFA500</color>
+
+        <!-- Purple to Pink -->
+        <color name="gradient_start_purple">#800080</color>
+        <color name="gradient_end_magenta">#FF00FF</color>
+
+        <!-- Cyan to Light Blue -->
+        <color name="gradient_start_cyan">#00FFFF</color>
+        <color name="gradient_end_light_cyan">#E0FFFF</color>
+
+        <!-- Gradient for purpleToWhite -->
+        <color name="weirdGray">#707070</color>
+        <color name="gradient_end_black">#000000</color>
+
 </resources>
