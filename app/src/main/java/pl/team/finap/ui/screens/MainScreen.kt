@@ -21,6 +21,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -33,14 +35,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import pl.team.finap.R
 import pl.team.finap.database.entities.CategoryType
 
 
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
+fun MainScreen(navController: NavController) {
     val purpleToWhiteGradient = Brush.linearGradient(
         colors = listOf(
             colorResource(R.color.weirdGray),
@@ -128,8 +130,9 @@ fun MainScreen() {
         }
         FloatingActionButton(
             onClick = {
-                navController.navigate("Destination")
-            }, modifier = Modifier
+                navController.navigate("NewTransaction")
+            },
+            modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomEnd)
         ) {
@@ -292,10 +295,4 @@ fun getCategoryGradientColors(category: CategoryType): Pair<Int, Int> {
             R.color.gradient_start_purple, R.color.gradient_end_magenta
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewMainScreen() {
-    MainScreen()
 }
