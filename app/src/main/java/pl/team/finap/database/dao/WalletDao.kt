@@ -1,35 +1,32 @@
 package pl.team.finap.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
+import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+import pl.team.finap.database.entities.TransactionType
 import pl.team.finap.database.entities.Wallet
-import pl.team.finap.database.entities.embedded.WalletWithTransactions
-
 
 @Dao
 interface WalletDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWallet(wallet: Wallet): Long
+    fun insertWallet(wallet: Wallet): Long
 
     @Update
-    suspend fun updateWallet(wallet: Wallet)
+    fun updateWallet(wallet: Wallet)
 
     @Delete
-    suspend fun deleteWallet(wallet: Wallet)
+    fun deleteWallet(wallet: Wallet)
 
     @Query("SELECT * FROM WALLETS")
-    suspend fun getAllWallets(): List<Wallet>
+    fun getAllWallets(): Flow<List<Wallet>>
 
     @Query("SELECT * FROM WALLETS WHERE wallet_id = :id")
-    suspend fun getWalletById(id: Long): Wallet
+    fun getWalletById(id: Long): Wallet
 
-    @Transaction
-    @Query("SELECT * FROM WALLETS WHERE wallet_id = :id")
-    suspend fun getWalletWithTransactions(id: Long): WalletWithTransactions
+    @Query("SELECT * FROM WALLETS LIMIT 1")
+    fun getOnlyWallet(): Wallet?
+
+    @Query("SELECT SUM(amount) FROM Transactions WHERE type = :type") // Assuming your table name is 'Transactions' and there's a column named 'type'
+    fun getTotalAmountByType(type: TransactionType): Float
+
 }

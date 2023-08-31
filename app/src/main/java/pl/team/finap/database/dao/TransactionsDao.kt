@@ -1,23 +1,32 @@
 package pl.team.finap.database.dao
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+import pl.team.finap.database.entities.TransactionType
 import pl.team.finap.database.entities.Transactions
+import pl.team.finap.database.respository.TransactionsRepository
 
 @Dao
 interface TransactionsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTransaction(transaction: Transactions): Long
+    fun insertTransaction(transaction: Transactions): Long
 
     @Update
-    suspend fun updateTransaction(transaction: Transactions)
+    fun updateTransaction(transaction: Transactions)
 
     @Delete
-    suspend fun deleteTransaction(transaction: Transactions)
+    fun deleteTransaction(transaction: Transactions)
+
+    @Query("SELECT * FROM TRANSACTIONS WHERE wallet_id = :walletId")
+    fun getTransactionsForWallet(walletId: Long): List<Transactions>
 
     @Query("SELECT * FROM TRANSACTIONS")
-    suspend fun getAllTransactions(): List<Transactions>
+    fun getAllTransactions(): List<Transactions>
 
-    @Query("SELECT * FROM TRANSACTIONS WHERE transaction_id = :id")
-    suspend fun getTransactionById(id: Int): Transactions
+    @Query("SELECT category, SUM(amount) as total FROM transactions WHERE type = 'EXPENSE' GROUP BY category")
+    fun getTotalExpensePerCategory(): Flow<List<TransactionsRepository.CategoryTotal>>
+
+    @Query("SELECT SUM(amount) FROM transactions WHERE type = :transactionType")
+    fun getTotalForType(transactionType: TransactionType): Float
 }

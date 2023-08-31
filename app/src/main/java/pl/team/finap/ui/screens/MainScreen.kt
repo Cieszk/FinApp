@@ -21,8 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,18 +32,33 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import pl.team.finap.R
 import pl.team.finap.database.entities.CategoryType
+import pl.team.finap.database.respository.TransactionsRepository
+import pl.team.finap.database.respository.WalletRepository
+import pl.team.finap.ui.screens.viewmodels.TransactionsViewModel
+import pl.team.finap.ui.screens.viewmodels.TransactionsViewModelFactory
+import pl.team.finap.ui.screens.viewmodels.WalletViewModel
+import pl.team.finap.ui.screens.viewmodels.WalletViewModelFactory
 
 
 @Composable
-fun MainScreen(navController: NavController) {
+fun MainScreen(navController: NavController, transactionsRepository: TransactionsRepository, walletRepository: WalletRepository) {
+    val transactionsViewModel: TransactionsViewModel = viewModel(factory = TransactionsViewModelFactory(transactionsRepository))
+    val walletViewModel: WalletViewModel = viewModel(factory = WalletViewModelFactory(walletRepository))
+
+    val walletBalance: Float? by walletViewModel.walletBalance.observeAsState()
+    val totalIncome by transactionsViewModel.totalIncome.observeAsState(initial = 0f)
+    val totalExpenses by transactionsViewModel.totalExpenses.observeAsState(initial = 0f)
+
+    val categoryTotals by transactionsViewModel.expensePerCategory.collectAsState(emptyList())
+    val categoryAmounts = categoryTotals.map { it.total }.toList()
+
     val purpleToWhiteGradient = Brush.linearGradient(
         colors = listOf(
             colorResource(R.color.weirdGray),
@@ -71,7 +87,6 @@ fun MainScreen(navController: NavController) {
             colorResource(id = R.color.gradient_end_light_cyan)
         )
     )
-    val walletBalance = "100.00"
 
     Box(
         modifier = Modifier
@@ -101,7 +116,7 @@ fun MainScreen(navController: NavController) {
                     }
                     Row() {
                         Text(
-                            text = walletBalance, style = TextStyle(
+                            text = walletBalance.toString(), style = TextStyle(
                                 fontStyle = FontStyle.Italic, fontSize = 24.sp
                             ), modifier = Modifier.padding(2.dp, 4.dp)
                         )
@@ -122,10 +137,10 @@ fun MainScreen(navController: NavController) {
                     .height(250.dp)
                     .background(Color.Gray.copy(alpha = 0.2f))
             ) {
-                BarChart(data = data, gradientColors = gradientColors, maxHeight = 200.dp)
+                BarChart(data = categoryAmounts, gradientColors = gradientColors, maxHeight = 200.dp)
             }
             LegendCard(categories = CategoryType.values().toList())
-            TransactionRow()
+            TransactionRow(income =  totalIncome, expense = totalExpenses)
 
         }
         FloatingActionButton(
@@ -142,13 +157,13 @@ fun MainScreen(navController: NavController) {
 }
 
 @Composable
-fun TransactionRow() {
+fun TransactionRow(income: Float, expense: Float) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
         TransactionCard(
             label = "Expenses",
-            amount = String.format("-%s", "12091"),
+            amount = String.format("-%s", expense.toString()),
             color = colorResource(id = R.color.gradient_start_red),
             modifier = Modifier
                 .weight(1f)
@@ -156,7 +171,7 @@ fun TransactionRow() {
         )
         TransactionCard(
             label = "Income",
-            amount = String.format("+%s", "12091"),
+            amount = String.format("+%s", income.toString()),
             color = colorResource(id = R.color.gradient_start_green),
             modifier = Modifier
                 .weight(1f)

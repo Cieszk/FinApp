@@ -7,13 +7,13 @@ import java.math.BigDecimal
 import java.util.Date
 
 @Entity(
+    tableName = "TRANSACTIONS",
     foreignKeys = [ForeignKey(
         entity = Wallet::class,
-        parentColumns = arrayOf("wallet_id"),
-        childColumns = arrayOf("wallet_id"),
+        parentColumns = ["wallet_id"],
+        childColumns = ["wallet_id"],
         onDelete = ForeignKey.CASCADE
-    )],
-    tableName = "TRANSACTIONS"
+    )]
 )
 data class Transactions(
     @PrimaryKey(autoGenerate = true)
@@ -24,18 +24,12 @@ data class Transactions(
     val transaction_date: Date,
     val description: String,
     val category: CategoryType
-
 )
 
 enum class CategoryType {
-    BILLS,
-    FOOD,
-    CLOTHES,
-    ELECTRONICS,
-    OTHER
+    BILLS, FOOD, CLOTHES, ELECTRONICS, OTHER
 }
 
 enum class TransactionType {
-    INCOME,
-    EXPENSE
+    INCOME, EXPENSE
 }
