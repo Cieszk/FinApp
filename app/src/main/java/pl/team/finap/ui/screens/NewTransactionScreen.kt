@@ -48,7 +48,10 @@ import java.math.BigDecimal
 import java.util.Date
 
 @Composable
-fun NewTransactionScreen(transactionsRepository: TransactionsRepository, navController: NavController) {
+fun NewTransactionScreen(
+    transactionsRepository: TransactionsRepository,
+    navController: NavController
+) {
     var transactionType by remember { mutableStateOf(TransactionType.INCOME) }
     var selectedCategory by remember { mutableStateOf(CategoryType.values().first()) }
     var amount by remember { mutableStateOf(TextFieldValue("")) }
@@ -75,7 +78,6 @@ fun NewTransactionScreen(transactionsRepository: TransactionsRepository, navCont
             modifier = Modifier.fillMaxSize()
         ) {
 
-            // TransactionType dropdown inside a Card
             Card(
                 shape = RoundedCornerShape(8.dp),
                 elevation = CardDefaults.cardElevation(4.dp),
@@ -100,7 +102,6 @@ fun NewTransactionScreen(transactionsRepository: TransactionsRepository, navCont
             if (transactionType == TransactionType.EXPENSE) {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // CategoryType dropdown inside a Card
                 Card(
                     shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(4.dp),
@@ -129,7 +130,8 @@ fun NewTransactionScreen(transactionsRepository: TransactionsRepository, navCont
                     .height(68.dp)
                     .padding(start = 15.dp, end = 15.dp)
             ) {
-                OutlinedTextField(value = amount,
+                OutlinedTextField(
+                    value = amount,
                     onValueChange = { amount = it },
                     label = { Text("Amount") },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
@@ -147,7 +149,8 @@ fun NewTransactionScreen(transactionsRepository: TransactionsRepository, navCont
                     .height(68.dp)
                     .padding(start = 15.dp, end = 15.dp)
             ) {
-                OutlinedTextField(value = description,
+                OutlinedTextField(
+                    value = description,
                     onValueChange = { description = it },
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth()
@@ -157,7 +160,6 @@ fun NewTransactionScreen(transactionsRepository: TransactionsRepository, navCont
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(onClick = {
-                // Assuming the wallet ID is fetched and stored in a variable called `globalWalletId`
                 val globalWalletId = viewModel.getGlobalWalletId()
 
                 if (amount.text.isNotBlank() && description.text.isNotBlank()) {
@@ -180,7 +182,11 @@ fun NewTransactionScreen(transactionsRepository: TransactionsRepository, navCont
                 Text("Add")
             }
             if (showError) {
-                Text("All fields are required!", color = Color.Red, modifier = Modifier.padding(top = 8.dp))
+                Text(
+                    "All fields are required!",
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
         }
     }

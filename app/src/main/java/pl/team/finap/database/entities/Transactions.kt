@@ -7,8 +7,7 @@ import java.math.BigDecimal
 import java.util.Date
 
 @Entity(
-    tableName = "TRANSACTIONS",
-    foreignKeys = [ForeignKey(
+    tableName = "TRANSACTIONS", foreignKeys = [ForeignKey(
         entity = Wallet::class,
         parentColumns = ["wallet_id"],
         childColumns = ["wallet_id"],
@@ -16,8 +15,7 @@ import java.util.Date
     )]
 )
 data class Transactions(
-    @PrimaryKey(autoGenerate = true)
-    val transaction_id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val transaction_id: Int = 0,
     val wallet_id: Long,
     val amount: BigDecimal,
     val type: TransactionType,

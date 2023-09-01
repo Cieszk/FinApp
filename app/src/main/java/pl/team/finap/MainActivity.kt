@@ -29,7 +29,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
-            AppNavigator(navController = navController, transactionsRepository = transactionsRepository, walletRepository = walletRepository)
+            AppNavigator(
+                navController = navController,
+                transactionsRepository = transactionsRepository,
+                walletRepository = walletRepository
+            )
         }
     }
 
@@ -48,13 +52,23 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigator(navController: NavHostController, transactionsRepository: TransactionsRepository, walletRepository: WalletRepository) {
+fun AppNavigator(
+    navController: NavHostController,
+    transactionsRepository: TransactionsRepository,
+    walletRepository: WalletRepository
+) {
     NavHost(navController, startDestination = "MainScreen") {
         composable("MainScreen") {
-            MainScreen(navController = navController, transactionsRepository = transactionsRepository, walletRepository = walletRepository)
+            MainScreen(
+                navController = navController,
+                transactionsRepository = transactionsRepository,
+                walletRepository = walletRepository
+            )
         }
         composable("NewTransaction") {
-            NewTransactionScreen(navController = navController, transactionsRepository = transactionsRepository)
+            NewTransactionScreen(
+                navController = navController, transactionsRepository = transactionsRepository
+            )
         }
     }
 }

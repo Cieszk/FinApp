@@ -26,7 +26,7 @@ interface WalletDao {
     @Query("SELECT * FROM WALLETS LIMIT 1")
     fun getOnlyWallet(): Wallet?
 
-    @Query("SELECT SUM(amount) FROM Transactions WHERE type = :type") // Assuming your table name is 'Transactions' and there's a column named 'type'
+    @Query("SELECT SUM(amount) FROM Transactions WHERE type = :type")
     fun getTotalAmountByType(type: TransactionType): Float
 
 }

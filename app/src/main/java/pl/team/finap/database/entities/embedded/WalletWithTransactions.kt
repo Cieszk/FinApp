@@ -12,11 +12,7 @@ import pl.team.finap.database.entities.Wallet
  * @see https://developer.android.com/training/data-storage/room/relationships
  */
 data class WalletWithTransactions(
-    @Embedded
-    val wallet: Wallet,
-    @Relation(
-        parentColumn = "wallet_id",
-        entityColumn = "wallet_id"
-    )
-    val transactions: List<Transactions>
+    @Embedded val wallet: Wallet, @Relation(
+        parentColumn = "wallet_id", entityColumn = "wallet_id"
+    ) val transactions: List<Transactions>
 )

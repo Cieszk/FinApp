@@ -7,8 +7,7 @@ import pl.team.finap.database.entities.TransactionType
 import pl.team.finap.database.entities.Transactions
 
 class TransactionsRepository(
-    private val transactionsDao: TransactionsDao,
-    private val walletDao: WalletDao
+    private val transactionsDao: TransactionsDao, private val walletDao: WalletDao
 ) {
 
     suspend fun insertTransaction(transaction: Transactions): Long {
@@ -24,7 +23,6 @@ class TransactionsRepository(
     }
 
     suspend fun getGlobalWalletId(): Long {
-        // Assuming you want the ID of the only wallet
         return walletDao.getOnlyWallet()?.wallet_id ?: -1L
     }
 

@@ -48,9 +48,15 @@ import pl.team.finap.ui.screens.viewmodels.WalletViewModelFactory
 
 
 @Composable
-fun MainScreen(navController: NavController, transactionsRepository: TransactionsRepository, walletRepository: WalletRepository) {
-    val transactionsViewModel: TransactionsViewModel = viewModel(factory = TransactionsViewModelFactory(transactionsRepository))
-    val walletViewModel: WalletViewModel = viewModel(factory = WalletViewModelFactory(walletRepository))
+fun MainScreen(
+    navController: NavController,
+    transactionsRepository: TransactionsRepository,
+    walletRepository: WalletRepository
+) {
+    val transactionsViewModel: TransactionsViewModel =
+        viewModel(factory = TransactionsViewModelFactory(transactionsRepository))
+    val walletViewModel: WalletViewModel =
+        viewModel(factory = WalletViewModelFactory(walletRepository))
 
     val walletBalance: Float? by walletViewModel.walletBalance.observeAsState()
     val totalIncome by transactionsViewModel.totalIncome.observeAsState(initial = 0f)
@@ -61,8 +67,7 @@ fun MainScreen(navController: NavController, transactionsRepository: Transaction
 
     val purpleToWhiteGradient = Brush.linearGradient(
         colors = listOf(
-            colorResource(R.color.weirdGray),
-            colorResource(R.color.light_black)
+            colorResource(R.color.weirdGray), colorResource(R.color.light_black)
         )
     )
     val data = listOf(10f, 50f, 80f, 40f, 100f)
@@ -137,17 +142,18 @@ fun MainScreen(navController: NavController, transactionsRepository: Transaction
                     .height(250.dp)
                     .background(Color.Gray.copy(alpha = 0.2f))
             ) {
-                BarChart(data = categoryAmounts, gradientColors = gradientColors, maxHeight = 200.dp)
+                BarChart(
+                    data = categoryAmounts, gradientColors = gradientColors, maxHeight = 200.dp
+                )
             }
             LegendCard(categories = CategoryType.values().toList())
-            TransactionRow(income =  totalIncome, expense = totalExpenses)
+            TransactionRow(income = totalIncome, expense = totalExpenses)
 
         }
         FloatingActionButton(
             onClick = {
                 navController.navigate("NewTransaction")
-            },
-            modifier = Modifier
+            }, modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomEnd)
         ) {
@@ -213,7 +219,7 @@ fun BarChart(data: List<Float>, gradientColors: List<List<Color>>, maxHeight: Dp
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.surface),  // Set the color to match Card
+                .background(color = MaterialTheme.colorScheme.surface),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             data.forEachIndexed { index, value ->

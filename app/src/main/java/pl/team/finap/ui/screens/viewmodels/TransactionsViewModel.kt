@@ -10,7 +10,8 @@ import kotlinx.coroutines.launch
 import pl.team.finap.database.entities.Transactions
 import pl.team.finap.database.respository.TransactionsRepository
 
-class TransactionsViewModel(private val transactionsRepository: TransactionsRepository) : ViewModel() {
+class TransactionsViewModel(private val transactionsRepository: TransactionsRepository) :
+    ViewModel() {
 
     private val _expensePerCategory =
         MutableStateFlow<List<TransactionsRepository.CategoryTotal>>(emptyList())
@@ -29,11 +30,9 @@ class TransactionsViewModel(private val transactionsRepository: TransactionsRepo
 
     fun insertTransaction(transaction: Transactions) = viewModelScope.launch {
         transactionsRepository.insertTransaction(transaction)
-        // After inserting, you might want to update the transactions list as well
         _transactions.value = transactionsRepository.getAllTransactions()
     }
 
-    // For this method, be careful when using it. Since it involves a coroutine launch, the return value may not be immediately accurate.
     fun getGlobalWalletId(): Long {
         var walletId = -1L
         viewModelScope.launch {

@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import pl.team.finap.database.respository.TransactionsRepository
 
-class TransactionsViewModelFactory(private val transactionsRepository: TransactionsRepository) : ViewModelProvider.Factory {
+class TransactionsViewModelFactory(private val transactionsRepository: TransactionsRepository) :
+    ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
